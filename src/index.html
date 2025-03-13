@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script type="module" src="./main.ts"></script>
+</head>
+
+<body>
+    <div class="left-container">
+        <div class="left-section">
+            <div id="teamContainer">
+                <h2>Team Members</h2>
+                <ul id="teamList"></ul>
+            </div>
+            
+            <div id="newTask">
+                <h2>Lägg till uppgift</h2>
+            <form id="task-form">
+                <input type="text" id="title" placeholder="Titel" required>
+                <input type="text" id="description" placeholder="Beskrivning" required>
+                <select id="category">
+                    <option value="UX">UX</option>
+                    <option value="Frontend">Frontend</option>
+                    <option value="Backend">Backend</option>
+                </select>
+                <button type="submit">Lägg till</button>
+            </form>
+            </div>
+            
+            <div id="newMember">
+                <h2>Lägg till medlem</h2>
+                <form id="memberForm">
+                    <input type="text" id="memberName" placeholder="Namn" required />
+                    <select id="memberRole" required>
+                        <option value="">Välj roll</option>
+                        <option value="UX designer">UX designer</option>
+                        <option value="Frontend developer">Frontend developer</option>
+                        <option value="Backend developer">Backend developer</option>
+                    </select>
+                    <button type="submit">Lägg till medlem</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--Höger sektion-->
+    <div class="right-section">
+        <div class="filtersort-section">
+            <label for="filter-member">Filtrera efter medlem:</label>
+            <select id="filter-member">
+                <option value="">Alla medlemmar</option>
+            </select>
+            
+            <label for="filter-category">Filtrera efter kategori:</label>
+            <select id="filter-category">
+                <option value="">Alla kategorier</option>
+            </select>
+            
+            <label for="sortSelect">Sortera efter:</label>
+            <select id="sortSelect">
+                <option value="">Välj</option>
+                <option value="timestamp-asc">Äldst först</option>
+                <option value="timestamp-desc">Nyast först</option>
+                <option value="title-asc">Titel A-Ö</option>
+                <option value="title-desc">Titel Ö-A</option>
+            </select>
+        </div>
+
+        <div class="container">
+            <div class="column" id="new-tasks">
+                <h2>Nya uppgifter</h2>
+                <ul id="new-list"></ul>
+            </div>
+
+            <div class="column" id="in-progress-tasks">
+                <h2>Pågående</h2>
+                <ul id="in-progress-list"></ul>
+            </div>
+
+            <div class="column" id="done-tasks">
+                <h2>Utförda</h2>
+                <ul id="done-list"></ul>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
