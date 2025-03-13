@@ -4,7 +4,6 @@ import { getMembersForTask } from "./members";
 import { updateTaskList, populateFilterOptions, handleFilterChanges, filterAndSortTasks } from "./filterandsort";
 
 
-// HTML-element
 const newList = document.getElementById("new-list") as HTMLUListElement;
 const inProgressList = document.getElementById("in-progress-list") as HTMLUListElement;
 const doneList = document.getElementById("done-list") as HTMLUListElement;
@@ -13,7 +12,7 @@ const titleInput = document.getElementById("title") as HTMLInputElement;
 const descriptionInput = document.getElementById("description") as HTMLInputElement;
 const categoryInput = document.getElementById("category") as HTMLSelectElement;
 
-// Färgkodning för roller
+
 const categoryColors: { [key: string]: string } = {
     "UX": "lightblue",
     "Frontend": "#C9A7EB",
@@ -43,34 +42,7 @@ taskForm.addEventListener("submit", (e) => {
     taskForm.reset();
 });
 
-// ⭐ Funktion: Rendera pågående uppgifter med filter
-function renderInProgressTasks(filteredTasks: any[]) {
-    inProgressList.innerHTML = ""; // Rensa listan först
-
-    filteredTasks.forEach((task: any) => {
-        const li = document.createElement("li");
-        const formattedDate = new Date(task.timestamp).toLocaleString("sv-SE");
-        li.style.backgroundColor = categoryColors[task.category] || "white";
-        li.innerHTML = `${task.title} <br> ${task.description} <br> ${task.category} <br> ${formattedDate}`;
-
-        // Hämta och visa den tilldelade medlemmens namn
-        onValue(ref(db, `users/${task.assignedTo}`), (snapshot) => {
-            const assignedMember = snapshot.val();
-            li.innerHTML += ` <br> Tilldelad: ${assignedMember?.name || "Okänd"}`;
-        });
-
-        const completeButton = document.createElement("button");
-        completeButton.textContent = "Klar";
-        completeButton.classList.add("complete-btn");
-        completeButton.onclick = () => updateTask(task.id, "done", task.assignedTo);
-        li.appendChild(completeButton);
-        inProgressList.appendChild(li);
-    });
-}
-
-
-
-// ⭐ Funktion: Rendera ALLA uppgifter
+// Hanterar Nya och Klara uppgifter
 function renderTasks(allTasks: any[]) {
     newList.innerHTML = "";
     doneList.innerHTML = "";
@@ -99,11 +71,12 @@ function renderTasks(allTasks: any[]) {
             li.appendChild(assignSelect);
             li.appendChild(assignButton);
             newList.appendChild(li);
-        } else if (task.status === "done") {
+        } 
+        else if (task.status === "done") {
             onValue(ref(db, `users/${task.assignedTo}`), (userSnapshot) => {
                 const assignedMember = userSnapshot.val();
-                const completedByText = assignedMember ? ` <br> Utförd av: ${assignedMember.name}` : ""; // Hämta användarnamn
-                li.innerHTML += completedByText; // Lägg till namnet i listan
+                const completedByText = assignedMember ? ` <br> Utförd av: ${assignedMember.name}` : "";
+                li.innerHTML += completedByText;
             });
 
             const deleteButton = document.createElement("button");
@@ -116,29 +89,51 @@ function renderTasks(allTasks: any[]) {
     });
 }
 
+// Hanterar Pågående uppgifter
+function renderInProgressTasks(filteredTasks: any[]) {
+    inProgressList.innerHTML = "";
 
-// ⭐ Uppdatera en uppgifts status
+    filteredTasks.forEach((task: any) => {
+        const li = document.createElement("li");
+        const formattedDate = new Date(task.timestamp).toLocaleString("sv-SE");
+        li.style.backgroundColor = categoryColors[task.category] || "white";
+        li.innerHTML = `${task.title} <br> ${task.description} <br> ${task.category} <br> ${formattedDate}`;
+
+        onValue(ref(db, `users/${task.assignedTo}`), (snapshot) => {
+            const assignedMember = snapshot.val();
+            li.innerHTML += ` <br> Tilldelad: ${assignedMember?.name || "Okänd"}`;
+        });
+
+        const completeButton = document.createElement("button");
+        completeButton.textContent = "Klar";
+        completeButton.classList.add("complete-btn");
+        completeButton.onclick = () => updateTask(task.id, "done", task.assignedTo);
+        li.appendChild(completeButton);
+        inProgressList.appendChild(li);
+    });
+}
+
+
 function updateTask(taskId: string, status: string, assignedTo?: string) {
     const updates: any = { status };
     if (assignedTo) updates.assignedTo = assignedTo;
 
     update(ref(db, `tasks/${taskId}`), updates)
-        .then(() => console.log(`✅ Uppgift uppdaterad till ${status}`))
-        .catch((error) => console.error("❌ Fel vid uppdatering:", error));
+        .then(() => console.log(`Uppgift uppdaterad till ${status}`))
+        .catch((error) => console.error("Fel vid uppdatering:", error));
 }
 
 
-// Ta bort en uppgift
 function deleteTask(taskId: string) {
     remove(ref(db, `tasks/${taskId}`));
 }
 
-// 🔹 Initialisera alla funktioner
+
 function initialize() {
-    populateFilterOptions(); // Fyll i filter
-    handleFilterChanges(renderInProgressTasks); // Lyssna på filterändringar och uppdatera listan
-    updateTaskList(renderInProgressTasks); // Hämta och visa uppgifter när sidan laddas
-    onValue(ref(db, "tasks"), (snapshot) => renderTasks(Object.values(snapshot.val() || {}))); // Ladda alla uppgifter
+    populateFilterOptions();
+    handleFilterChanges(renderInProgressTasks);
+    updateTaskList(renderInProgressTasks);
+    onValue(ref(db, "tasks"), (snapshot) => renderTasks(Object.values(snapshot.val() || {})));
 
 }
 
