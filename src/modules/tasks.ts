@@ -1,3 +1,6 @@
+// Denna modul hanterar interaktionen med Firebase-databasen och 
+//  renderingen av uppgifter i de tre kolumnerna (Ny, Pågående, Klar).
+
 import { db } from "./firebase";
 import { ref, push, set, update, remove, onValue } from "firebase/database";
 import { getMembersForTask } from "./members";

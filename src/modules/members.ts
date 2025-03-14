@@ -1,3 +1,7 @@
+// Denna modul hanterar registrering av teammedlemmar och deras roller i Firebase. 
+// Den visar också teammedlemmarna i en lista och gör det möjligt att hämta relevanta 
+//  medlemmar för uppgifter baserat på deras kategori.
+
 import { db } from "./firebase";
 import { ref, push, set, onValue } from "firebase/database";
 

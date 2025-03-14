@@ -1,3 +1,5 @@
+// Denna modul hanterar filtrering och sortering av uppgifter i Firebase-databasen.
+
 import { ref, onValue } from "firebase/database";
 import { db } from "./firebase";
 
